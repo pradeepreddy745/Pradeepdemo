@@ -1,4 +1,15 @@
 
+terraform {
+  required_providers {
+    azurerm = {
+      source  = "hashicorp/azurerm"
+      version = "~> 3.0.0"
+    }
+  }
+
+  required_version = ">= 1.1.0"
+}
+
 provider "azurerm" {
   features {}
 }
@@ -58,12 +69,12 @@ resource "azurerm_app_service" "app" {
 }
 
 resource "azurerm_mssql_server" "sql_server" {
-  name                         = "secure-sqlserver"
+  name                         = "securesqlserver12345"
   resource_group_name          = azurerm_resource_group.rg.name
   location                     = azurerm_resource_group.rg.location
   version                      = "12.0"
   administrator_login          = "sqladminuser"
-  administrator_login_password = "StrongP@ssw0rd123"
+  administrator_login_password = "StrongP@ssw0rd123!"
 }
 
 resource "azurerm_mssql_database" "sql_db" {
@@ -96,12 +107,4 @@ resource "azurerm_private_dns_zone_virtual_network_link" "sql_dns_link" {
   resource_group_name   = azurerm_resource_group.rg.name
   private_dns_zone_name = azurerm_private_dns_zone.sql_dns.name
   virtual_network_id    = azurerm_virtual_network.vnet.id
-}
-
-resource "azurerm_private_dns_a_record" "sql_a_record" {
-  name                = "secure-sqlserver"
-  zone_name           = azurerm_private_dns_zone.sql_dns.name
-  resource_group_name = azurerm_resource_group.rg.name
-  ttl                 = 300
-  records             = [azurerm_private_endpoint.sql_pe.private_service_connection[0].private_ip_address]
 }
