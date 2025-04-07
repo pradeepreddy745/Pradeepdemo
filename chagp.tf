@@ -57,6 +57,13 @@ resource "azurerm_app_service" "app" {
   }
 }
 
+
+resource "azurerm_app_service_virtual_network_swift_connection" "example" {
+  app_service_id = azurerm_app_service.app.id
+  subnet_id      = azurerm_subnet.snet1.id
+}
+
+
 resource "azurerm_mssql_server" "sql_server" {
   name                         = "secure-sqlserver"
   resource_group_name          = azurerm_resource_group.rg.name
